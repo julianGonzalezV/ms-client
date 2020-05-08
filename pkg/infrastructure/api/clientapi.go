@@ -2,7 +2,7 @@ package server
 
 import (
 	"encoding/json"
-	"ms-client/pkg/model"
+	"ms-client/pkg/domain/model"
 
 	"net/http"
 

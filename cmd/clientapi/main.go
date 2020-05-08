@@ -6,7 +6,7 @@ import (
 
 	"net/http"
 
-	"ms-client/pkg/server"
+	"ms-client/pkg/infrastructure/api"
 )
 
 func main() {
