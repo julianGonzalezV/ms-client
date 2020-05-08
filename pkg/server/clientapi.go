@@ -46,7 +46,8 @@ func (a *api) fetchAllClients(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(clients)*/
 	clients := Clients{
-		model.Client{ID: "c123", Name: "Juli", Age: 32},
+		model.Client{ID: "C66708", FirstName: "Clari", Age: 32},
+		model.Client{ID: "C1116235", FirstName: "Juli", Age: 32},
 	}
 	json.NewEncoder(w).Encode(clients)
 }
@@ -61,5 +62,5 @@ func (a *api) fetchClient(w http.ResponseWriter, r *http.Request) {
 		return
 	}*/
 
-	json.NewEncoder(w).Encode(model.Client{ID: "c111523", Name: "Juliano", Age: 32})
+	json.NewEncoder(w).Encode(model.Client{ID: "c111523", FirstName: "Juliano", Age: 32})
 }
