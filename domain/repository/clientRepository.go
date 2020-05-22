@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"ms-client/pkg/domain/model"
+	"ms-client/domain/model"
 )
 
 // ClientRepository interface that establishes functions to be implemented depending on client storage

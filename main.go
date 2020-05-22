@@ -1,12 +1,10 @@
-package main
+
 
 // Main or entry point for our application
 import (
 	"log"
-
+	"ms-client/infrastructure/resource"
 	"net/http"
-
-	"ms-client/pkg/infrastructure/api"
 )
 
 func main() {

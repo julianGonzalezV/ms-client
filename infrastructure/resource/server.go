@@ -1,8 +1,8 @@
-package server
+package resource
 
 import (
 	"encoding/json"
-	"ms-client/pkg/domain/model"
+	"ms-client/domain/model"
 
 	"net/http"
 
