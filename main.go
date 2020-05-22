@@ -1,4 +1,4 @@
-
+package main
 
 // Main or entry point for our application
 import (
@@ -8,6 +8,6 @@ import (
 )
 
 func main() {
-	s := server.New()
+	s := resource.New()
 	log.Fatal(http.ListenAndServe(":8080", s.Router()))
 }
