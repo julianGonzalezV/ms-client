@@ -10,7 +10,7 @@ type ClientRepository interface {
 	Create(c *model.Client) error
 	// Fetch return all clients saved in storage
 	Fetch() ([]*model.Client, error)
-	// Delete remove gopher with given ID
+	// Delete remove a client with given ID
 	Delete(ID string) error
 	// Update modify client with given ID and given new data
 	Update(ID string, c *model.Client) error

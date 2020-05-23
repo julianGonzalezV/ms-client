@@ -21,4 +21,9 @@ https://blog.friendsofgo.tech/posts/como_crear_una_api_rest_en_golang/
 # Commands to execute if you want to run this project
 -To install gorilla mux
 $ go get -u github.com/gorilla/mux
+
+# Install the MongoDB Go Driver
+go get go.mongodb.org/mongo-driver
+
+
 $ go run cmd/clientapi/main.go
