@@ -15,7 +15,7 @@ type cRepository struct {
 	db *mongo.Client
 }
 
-func getConnection(addr string) *mongo.Client {
+func Connect(addr string) *mongo.Client {
 	// Set client options
 	clientOptions := options.Client().ApplyURI(addr)
 

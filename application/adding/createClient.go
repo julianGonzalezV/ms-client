@@ -1,14 +1,14 @@
-package application
+package adding
 
 import (
 	"context"
-	"ms-client/domain/model"
+	"ms-client/domain/model/client"
 	"ms-client/domain/repository"
 )
 
 // Service provides adding operations.
 type Service interface {
-	AddClient(ctx context.Context, ID, name, age int) error
+	AddClient(ctx context.Context, ID, IDType, FirstName string) error
 }
 
 type service struct {
@@ -21,7 +21,7 @@ func NewService(repository repository.ClientRepository) Service {
 }
 
 // AddClient adds the given client to storage
-func (s *service) AddClient(ctx context.Context, ID, IDType, FirstName) error {
-	c :=  model.New{ID, IDType, FirstName}
+func (s *service) AddClient(ctx context.Context, ID, IDType, FirstName string) error {
+	c := client.New(ID, IDType, FirstName)
 	return s.repository.Create(ctx, c)
 }

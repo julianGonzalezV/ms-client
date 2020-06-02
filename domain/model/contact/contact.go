@@ -1,4 +1,4 @@
-package model
+package contact
 
 //Contact ...
 type Contact struct {

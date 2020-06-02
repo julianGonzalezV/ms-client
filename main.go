@@ -2,6 +2,7 @@ package main
 
 // Main or entry point for our application
 import (
+	"gopherapi/pkg/adding"
 	"log"
 	"ms-client/domain/repository"
 	"ms-client/infrastructure/repositoryimpl"
@@ -13,6 +14,9 @@ import (
 func main() {
 	s := resource.New()
 	log.Fatal(http.ListenAndServe(":8080", s.Router()))
+	repo := initializeRepo(database, trc, gophers)
+	// Services initialization, injecting despendencies
+	addingService := adding.NewService(repo)
 }
 
 func initializeRepo(database *string) repository.ClientRepository {
@@ -27,7 +31,7 @@ func initializeRepo(database *string) repository.ClientRepository {
 }
 
 func newClientMongoRepository() repository.ClientRepository {
-	mongoAddr := os.Getenv("COCKROACH_ADDR")
-	client := repositoryimpl.getConnection(mongoAddr)
+	mongoAddr := os.Getenv("MONGO_ADDR")
+	client := repositoryimpl.Connect(mongoAddr)
 	return repositoryimpl.NewRepository(client)
 }
