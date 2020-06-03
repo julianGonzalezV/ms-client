@@ -2,7 +2,9 @@ package resource
 
 import (
 	"encoding/json"
-	"ms-client/domain/model"
+	"log"
+	"ms-client/application/adding"
+	"ms-client/domain/model/client"
 
 	"net/http"
 
@@ -11,25 +13,33 @@ import (
 
 type api struct {
 	router http.Handler
+	adding adding.Service
 }
 
 // Server ...
 type Server interface {
 	Router() http.Handler
+	AddClient(w http.ResponseWriter, r *http.Request)
 }
 
 // New ...
-func New() Server {
-	a := &api{}
-
-	r := mux.NewRouter()
-	//Configurando las rutas que debe resolver
-	r.HandleFunc("/clients", a.fetchAllClients).Methods(http.MethodGet)
-	// Note como Gorilla mux permite colocar expresione regulares para establecer reglas en los parámetros que
-	// se pasen
-	r.HandleFunc("/clients/{ID:[a-zA-Z0-9_]+}", a.fetchClient).Methods(http.MethodGet)
-	a.router = r
+func New(
+	aS adding.Service,
+) Server {
+	a := &api{adding: aS}
+	router(a)
 	return a
+}
+
+func router(a *api) {
+	r := mux.NewRouter()
+	// Configurando las rutas que debe resolver
+	r.HandleFunc("/clients", a.AddClient).Methods(http.MethodPost)
+	/*r.HandleFunc("/clients", a.fetchAllClients).Methods(http.MethodGet)
+	Note como Gorilla mux permite colocar expresione regulares para establecer reglas en los parámetros que
+	// se pasen
+	r.HandleFunc("/clients/{ID:[a-zA-Z0-9_]+}", a.fetchClient).Methods(http.MethodGet)*/
+	a.router = r
 }
 
 func (a *api) Router() http.Handler {
@@ -37,30 +47,43 @@ func (a *api) Router() http.Handler {
 }
 
 //Clients ...
-type Clients []model.Client
+type Clients []client.Client
 
 func (a *api) fetchAllClients(w http.ResponseWriter, r *http.Request) {
-	/*
-		clients, _ := a.repository.FetchGophers()
-
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(clients)*/
 	clients := Clients{
-		model.Client{ID: "C66708", FirstName: "Clari", Age: 32},
-		model.Client{ID: "C1116235", FirstName: "Juli", Age: 32},
+		client.Client{ID: "C66708", FirstName: "Clari", Age: 32},
+		client.Client{ID: "C1116235", FirstName: "Juli", Age: 32},
 	}
 	json.NewEncoder(w).Encode(clients)
 }
 
 func (a *api) fetchClient(w http.ResponseWriter, r *http.Request) {
-	/*vars := mux.Vars(r)
-	gopher, err := a.repository.FetchGopherByID(vars["ID"])
+	json.NewEncoder(w).Encode(client.Client{ID: "c111523", FirstName: "Juliano", Age: 32})
+}
+
+type addClientRequest struct {
+	ID     string `json:"ID"`
+	IDType string `json:"IDType"`
+	Name   string `json:"name"`
+}
+
+// AddClient function saves a new client
+func (a *api) AddClient(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var cl addClientRequest
+	err := decoder.Decode(&cl)
+
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound) // We use not found for simplicity
-		json.NewEncoder(w).Encode("Gopher Not found")
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode("Error unmarshalling request body")
 		return
-	}*/
-
-	json.NewEncoder(w).Encode(model.Client{ID: "c111523", FirstName: "Juliano", Age: 32})
+	}
+	if err := a.adding.AddClient(r.Context(), cl.ID, cl.IDType, cl.Name); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode("Can't create the client")
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
 }
