@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"ms-client/domain/model"
+	"ms-client/domain/model/client"
 	"ms-client/domain/repository"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,6 +15,7 @@ type cRepository struct {
 	db *mongo.Client
 }
 
+// Connect retunrs a new connection to storage target
 func Connect(addr string) *mongo.Client {
 	// Set client options
 	clientOptions := options.Client().ApplyURI(addr)
@@ -41,7 +42,7 @@ func NewRepository(db *mongo.Client) repository.ClientRepository {
 }
 
 // Create saves a given client
-func (r cRepository) Create(ctx context.Context, c *model.Client) error {
+func (r cRepository) Create(ctx context.Context, c *client.Client) error {
 	//var client = getConnection()
 	// Get a handle for your collection
 	collection := r.db.Database("salud-digital-dllo").Collection("clients")
@@ -55,7 +56,7 @@ func (r cRepository) Create(ctx context.Context, c *model.Client) error {
 }
 
 // Fetch return all clients saved in storage
-func (r cRepository) Fetch() ([]*model.Client, error) {
+func (r cRepository) Fetch() ([]*client.Client, error) {
 	return nil, nil
 }
 
@@ -65,11 +66,11 @@ func (r cRepository) Delete(ID string) error {
 }
 
 // Update modify client with given ID and given new data
-func (r cRepository) Update(ID string, c *model.Client) error {
+func (r cRepository) Update(ID string, c *client.Client) error {
 	return nil
 }
 
 // FetchByID returns the client with given ID
-func (r cRepository) FetchByID(ID string) (*model.Client, error) {
+func (r cRepository) FetchByID(ID string) (*client.Client, error) {
 	return nil, nil
 }

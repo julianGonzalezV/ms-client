@@ -2,21 +2,42 @@ package main
 
 // Main or entry point for our application
 import (
-	"gopherapi/pkg/adding"
+	"flag"
+	"fmt"
+	"gopherapi/pkg/server"
 	"log"
+	"ms-client/application/adding"
 	"ms-client/domain/repository"
 	"ms-client/infrastructure/repositoryimpl"
-	"ms-client/infrastructure/resource"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func main() {
-	s := resource.New()
-	log.Fatal(http.ListenAndServe(":8080", s.Router()))
+	var (
+		defaultHost     = os.Getenv("CLIENTAPI_SERVER_HOST")
+		defaultPort, _  = strconv.Atoi(os.Getenv("CLIENTAPI_SERVER_PORT"))
+		defaultDatabase = os.Getenv("CLIENTAPI_SERVER_PORT")
+	)
+
+	host := flag.String("host", defaultHost, "define host of the server")
+	port := flag.Int("port", defaultPort, "define port of the server")
+	database := flag.String("database", defaultDatabase, "initialize the api using the given db engine")
+
+	/*
+		s := resource.New()
+	*/
 	repo := initializeRepo(database, trc, gophers)
 	// Services initialization, injecting despendencies
 	addingService := adding.NewService(repo)
+	httpAddr := fmt.Sprintf("%s:%d", *host, *port)
+
+	s := server.New(
+		addingService,
+	)
+	fmt.Println("The client server is running", httpAddr)
+	log.Fatal(http.ListenAndServe(httpAddr, s.Router()))
 }
 
 func initializeRepo(database *string) repository.ClientRepository {
