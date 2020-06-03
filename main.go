@@ -4,11 +4,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gopherapi/pkg/server"
 	"log"
 	"ms-client/application/adding"
 	"ms-client/domain/repository"
 	"ms-client/infrastructure/repositoryimpl"
+	"ms-client/infrastructure/resource"
 	"net/http"
 	"os"
 	"strconv"
@@ -28,12 +28,12 @@ func main() {
 	/*
 		s := resource.New()
 	*/
-	repo := initializeRepo(database, trc, gophers)
+	repo := initializeRepo(database)
 	// Services initialization, injecting despendencies
 	addingService := adding.NewService(repo)
 	httpAddr := fmt.Sprintf("%s:%d", *host, *port)
 
-	s := server.New(
+	s := resource.New(
 		addingService,
 	)
 	fmt.Println("The client server is running", httpAddr)
