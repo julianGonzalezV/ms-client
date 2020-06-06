@@ -45,7 +45,9 @@ func NewRepository(db *mongo.Client) repository.ClientRepository {
 func (r cRepository) Create(ctx context.Context, c *client.Client) error {
 	//var client = getConnection()
 	// Get a handle for your collection
-	collection := r.db.Database("salud-digital-dllo").Collection("clients")
+	fmt.Println("Create", c)
+	fmt.Println("Create", *c)
+	collection := r.db.Database("test").Collection("clients")
 	// Insert a single document
 	insertResult, err := collection.InsertOne(context.TODO(), c)
 	if err != nil {
