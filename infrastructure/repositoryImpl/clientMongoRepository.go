@@ -6,6 +6,7 @@ import (
 	"log"
 	"ms-client/domain/model/client"
 	"ms-client/domain/repository"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,21 +18,20 @@ type cRepository struct {
 
 // Connect retunrs a new connection to storage target
 func Connect(addr string) *mongo.Client {
+	fmt.Println("Connect to MongoDB!", addr)
 	// Set client options
-	clientOptions := options.Client().ApplyURI(addr)
-
-	// Connect to MongoDB
-	client, err := mongo.Connect(context.TODO(), clientOptions)
+	//clientOptions := options.Client().ApplyURI(addr)
+	client, err := mongo.NewClient(options.Client().ApplyURI(addr))
 	if err != nil {
+		fmt.Println("Error1!")
 		log.Fatal(err)
 	}
-
-	// Check the connection
-	err = client.Ping(context.TODO(), nil)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = client.Connect(ctx)
 	if err != nil {
+		fmt.Println("Error2!")
 		log.Fatal(err)
 	}
-
 	fmt.Println("Connected to MongoDB!")
 	return client
 }
