@@ -10,6 +10,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type cRepository struct {
@@ -26,13 +27,21 @@ func Connect(addr string) *mongo.Client {
 		fmt.Println("Error1!")
 		log.Fatal(err)
 	}
+	fmt.Println("voy a contexto")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	fmt.Println("conectando")
 	err = client.Connect(ctx)
 	if err != nil {
 		fmt.Println("Error2!")
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to MongoDB!")
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		fmt.Println("Error3!")
+		log.Fatal(err)
+	}
 	return client
 }
 
@@ -46,11 +55,13 @@ func (r cRepository) Create(ctx context.Context, c *client.Client) error {
 	//var client = getConnection()
 	// Get a handle for your collection
 	fmt.Println("Create", c)
-	fmt.Println("Create", *c)
 	collection := r.db.Database("test").Collection("clients")
+	fmt.Println("collection")
 	// Insert a single document
 	insertResult, err := collection.InsertOne(context.TODO(), c)
+	fmt.Println("insertResult")
 	if err != nil {
+		fmt.Println("Error insertando", err)
 		log.Fatal(err)
 	}
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
