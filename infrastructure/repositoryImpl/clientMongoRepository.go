@@ -22,7 +22,7 @@ func Connect(addr string) *mongo.Client {
 	fmt.Println("Connect to MongoDB!", addr)
 	// Set client options
 	//clientOptions := options.Client().ApplyURI(addr)
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://juligove:golang1105@cluster-tulsoft-shard-00-01.5r2lz.mongodb.net:27017/test"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(addr))
 	if err != nil {
 		fmt.Println("Error1!")
 		log.Fatal(err)
