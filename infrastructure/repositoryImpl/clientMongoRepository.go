@@ -22,13 +22,13 @@ func Connect(addr string) *mongo.Client {
 	fmt.Println("Connect to MongoDB!", addr)
 	// Set client options
 	//clientOptions := options.Client().ApplyURI(addr)
-	client, err := mongo.NewClient(options.Client().ApplyURI(addr))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://juligove:golang1105@cluster-tulsoft-shard-00-01.5r2lz.mongodb.net:27017/test"))
 	if err != nil {
 		fmt.Println("Error1!")
 		log.Fatal(err)
 	}
 	fmt.Println("voy a contexto")
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	fmt.Println("conectando")
 	err = client.Connect(ctx)
 	if err != nil {
@@ -36,12 +36,13 @@ func Connect(addr string) *mongo.Client {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to MongoDB!")
-	defer client.Disconnect(ctx)
+	//defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
-		fmt.Println("Error3!")
+		fmt.Println("Error3!", err)
 		log.Fatal(err)
 	}
+	fmt.Println("Ping!")
 	return client
 }
 
