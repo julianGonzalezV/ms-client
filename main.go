@@ -7,7 +7,7 @@ import (
 	"log"
 	"ms-client/application/adding"
 	"ms-client/domain/repository"
-	"ms-client/infrastructure/repositoryimpl"
+	repositoryimpl "ms-client/infrastructure/repositoryImpl"
 	"ms-client/infrastructure/resource"
 	"net/http"
 	"os"

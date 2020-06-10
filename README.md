@@ -8,8 +8,9 @@ xxworkspace
     src
     pkg
 
-Then, create the GOPATH environment variable, point to xxworkspace folder
-Additionally, you  have to create  GOPATH/bin into your PATH env variable (This is a pending step, please read https://golang.org/doc/gopath_code.html before )
+>Then, create the GOPATH environment variable, point to xxworkspace folder--ok
+
+>Additionally, you  have to create  GOPATH/bin into your PATH env variable (This is a pending step, please read https://golang.org/doc/gopath_code.html before )
     
 
 # Herramientas 
@@ -26,7 +27,7 @@ $ go get -u github.com/gorilla/mux
 
 # Install the MongoDB Go Driver
 https://blog.friendsofgo.tech/posts/driver-oficial-mongodb-golang/
-go get go.mongodb.org/mongo-driver
+go get -u go.mongodb.org/mongo-driver
 
 
 $ go run cmd/clientapi/main.go
