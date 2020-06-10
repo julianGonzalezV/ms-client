@@ -32,3 +32,8 @@ go get go.mongodb.org/mongo-driver
 ```bash
 $ source .env && go run main.go
 ```
+
+## Windows
+```bash
+$ start.bat
+```
