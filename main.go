@@ -7,7 +7,7 @@ import (
 	"log"
 	"ms-client/application/adding"
 	"ms-client/domain/repository"
-	"ms-client/infrastructure/repositoryimpl"
+	"ms-client/infrastructure/repositoryImpl"
 	"ms-client/infrastructure/resource"
 	"net/http"
 	"os"
@@ -16,20 +16,17 @@ import (
 
 func main() {
 	var (
-		defaultHost     = os.Getenv("CLIENTAPI_SERVER_HOST")
-		defaultPort, _  = strconv.Atoi(os.Getenv("CLIENTAPI_SERVER_PORT"))
-		defaultDatabase = os.Getenv("CLIENT_DEFAULT_DATABASE")
-		databaseName    = os.Getenv("CLIENT_DATABASE_NAME")
+		defaultHost    = os.Getenv("CLIENTAPI_SERVER_HOST")
+		defaultPort, _ = strconv.Atoi(os.Getenv("CLIENTAPI_SERVER_PORT"))
+		dbDriver       = os.Getenv("DATABASE_DRIVER")
 	)
-
 	host := flag.String("host", defaultHost, "define host of the server")
 	port := flag.Int("port", defaultPort, "define port of the server")
-	database := flag.String("database", defaultDatabase, "initialize the api using the given db engine")
+	database := flag.String("database", dbDriver, "initialize the api using the given db engine")
 
-	fmt.Println("CLIENTAPI_SERVER_HOST", defaultHost)
-	fmt.Println("CLIENTAPI_SERVER_PORT", *port)
-	fmt.Println("CLIENT_DEFAULT_DATABASE", defaultDatabase)
-	fmt.Println("CLIENT_DATABASE_NAME", databaseName)
+	fmt.Println("CLIENTAPI_SERVER_HOST=", defaultHost)
+	fmt.Println("CLIENTAPI_SERVER_PORT=", *port)
+	fmt.Println("DATABASE_DRIVER=", dbDriver)
 	/*
 		for _, e := range os.Environ() {
 			pair := strings.SplitN(e, "=", 2)
@@ -63,8 +60,8 @@ func initializeRepo(database *string) repository.ClientRepository {
 }
 
 func newClientMongoRepository() repository.ClientRepository {
-	mongoAddr := os.Getenv("MONGO_ADDR")
-	fmt.Println("mongoAddr", mongoAddr)
+	mongoAddr := os.Getenv("DATABASE_CONN")
+	fmt.Println("DATABASE_DRIVER=", mongoAddr)
 	client := repositoryimpl.Connect(mongoAddr)
 	return repositoryimpl.NewRepository(client)
 }

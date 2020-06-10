@@ -28,5 +28,7 @@ $ go get -u github.com/gorilla/mux
 https://blog.friendsofgo.tech/posts/driver-oficial-mongodb-golang/
 go get go.mongodb.org/mongo-driver
 
-
-$ go run cmd/clientapi/main.go
+## Linux
+```bash
+$ source .env && go run main.go
+```
