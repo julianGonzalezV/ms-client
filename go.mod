@@ -1,8 +1,8 @@
 module ms-client
 
-go 1.13
+go 1.14
 
 require (
 	github.com/gorilla/mux v1.7.4
-	go.mongodb.org/mongo-driver v1.3.1
+	go.mongodb.org/mongo-driver v1.3.4
 )
