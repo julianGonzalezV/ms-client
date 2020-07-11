@@ -50,10 +50,20 @@ https://docs.aws.amazon.com/lambda/latest/dg/golang-package.html
 
 Process
 - Into your root project folder execute:
-1) $ go get github.com/aws/aws-lambda-go/lambda   (if required)
-2) $ GOOS=linux go build main.go --> this command create an executable file called main as the .go name file
-3) $ zip ms-client.zip main
-4) $ upload zip to S3 via aws cli or manually
+1) 
+```bash
+$ go get github.com/aws/aws-lambda-go/lambda   (if required)
+```
+2) this command create an executable file called main as the .go name file
+```bash
+$ GOOS=linux go build main.go
+```
+
+3) 
+```bash
+$ zip ms-client.zip main
+```
+4)Upload zip to S3 via aws cli or manually
 - Nota: Para proyectos desde cero es mejor hacerlo con la lib de aws 
 pero en existentes se pueden usar wrappers como: (para este proyecto se usó apexGateway, ya que contabamos con una arquitectura ya hecha)
 https://github.com/apex/gateway (https://www.ocelotconsulting.com/2019/02/25/the-right-abstraction-for-lambdas.html)
