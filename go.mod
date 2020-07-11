@@ -1,6 +1,6 @@
 module ms-client
 
-go 1.13
+go 1.14
 
 require (
 	github.com/apex/gateway v1.1.1
