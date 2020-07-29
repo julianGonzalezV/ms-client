@@ -16,5 +16,5 @@ type ClientRepository interface {
 	// Delete remove a client with given ID
 	Delete(ID string) error
 	// Update modify client with given ID and given new data
-	Update(ID string, c *entity.Client) error
+	Update(c *entity.Client) error
 }

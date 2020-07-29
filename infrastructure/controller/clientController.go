@@ -49,12 +49,6 @@ func (a *api) Router() http.Handler {
 //Clients ...
 type Clients []entity.Client
 
-type clientRequest struct {
-	ID     string `json:"ID"`
-	IDType string `json:"IDType"`
-	Name   string `json:"name"`
-}
-
 // AddClient function saves a new client
 func (api *api) addClient(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)

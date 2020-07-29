@@ -70,9 +70,9 @@ func (r cRepository) Delete(ID string) error {
 }
 
 // Update modify client with given ID and given new data
-func (r cRepository) Update(ID string, c *entity.Client) error {
+func (r cRepository) Update(c *entity.Client) error {
 	collection := r.db.Database("test").Collection("clients")
-	updateResult, err := collection.UpdateOne(context.TODO(), bson.M{"id": c.ID}, bson.D{
+	updateResult, err := collection.UpdateOne(context.TODO(), bson.M{"id": c.IDNumber}, bson.D{
 		{"$set", bson.D{{"firtsname", c.FirstName}}},
 	})
 

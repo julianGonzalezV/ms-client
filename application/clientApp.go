@@ -8,12 +8,13 @@ import (
 	"context"
 	"ms-client/domain/entity"
 	"ms-client/domain/service"
+	"ms-client/infrastructure/shared/request"
 )
 
 // ClientAppInterface provides adding operations.
 type ClientAppInterface interface {
-	AddClient(ctx context.Context, ID, IDType, FirstName string) error
-	SaveClient(ctx context.Context, ID, IDType, FirstName string) error
+	AddClient(ctx context.Context, requestData request.ClientRequest) error
+	SaveClient(ctx context.Context, requestData request.ClientRequest) error
 	GetClient(ctx context.Context, ID string) (entity.Client, error)
 	GetAllClients(ctx context.Context) ([]*entity.Client, error)
 }
@@ -28,15 +29,22 @@ func NewClientApp(service service.ClientServiceInterface) ClientAppInterface {
 }
 
 // AddClient adds the given client to storage
-func (app *clientApp) AddClient(ctx context.Context, ID, IDType, FirstName string) error {
-	c := entity.NewClient(ID, IDType, FirstName)
+func (app *clientApp) AddClient(ctx context.Context, requestData request.ClientRequest) error {
+	c := entity.NewClient(requestData.IDType, requestData.IdNumber, requestData.Gender, requestData.FirstName,
+		requestData.SecondName, requestData.FirstLastName, requestData.SecondLastName, requestData.Birthdate,
+		requestData.Contact.Email, requestData.Contact.Cellphone, requestData.Contact.Address,
+		requestData.Contact.City, requestData.Contact.State, requestData.Contact.Country)
 	return app.service.AddClient(ctx, c)
+
 }
 
 // SaveClient save changes of given client to storage
-func (app *clientApp) SaveClient(ctx context.Context, ID, IDType, FirstName string) error {
-	c := entity.NewClient(ID, IDType, FirstName)
-	return app.service.SaveClient(ctx, ID, c)
+func (app *clientApp) SaveClient(ctx context.Context, requestData request.ClientRequest) error {
+	c := entity.NewClient(requestData.IDType, requestData.IdNumber, requestData.Gender, requestData.FirstName,
+		requestData.SecondName, requestData.FirstLastName, requestData.SecondLastName, requestData.Birthdate,
+		requestData.Contact.Email, requestData.Contact.Cellphone, requestData.Contact.Address,
+		requestData.Contact.City, requestData.Contact.State, requestData.Contact.Country)
+	return app.service.SaveClient(ctx, c)
 }
 
 // GetClient searches a client given its Id, It returns multiple results client and error
