@@ -5,6 +5,7 @@ import (
 	"log"
 	"ms-client/application"
 	"ms-client/domain/entity"
+	"ms-client/infrastructure/shared/request"
 
 	"net/http"
 
@@ -52,7 +53,7 @@ type Clients []entity.Client
 // AddClient function saves a new client
 func (api *api) addClient(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	var cl clientRequest
+	var cl request.ClientRequest
 	err := decoder.Decode(&cl)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -61,7 +62,7 @@ func (api *api) addClient(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewEncoder(w).Encode("Error unmarshalling request body")
 		return
 	}
-	if err := api.app.AddClient(r.Context(), cl.ID, cl.IDType, cl.Name); err != nil {
+	if err := api.app.AddClient(r.Context(), cl); err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode("Can't create the client")
@@ -88,7 +89,7 @@ func (api *api) searchClient(w http.ResponseWriter, r *http.Request) {
 // UpdateClient changes client record properties
 func (api *api) updateClient(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	var cl clientRequest
+	var cl request.ClientRequest
 	err := decoder.Decode(&cl)
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
@@ -96,7 +97,7 @@ func (api *api) updateClient(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewEncoder(w).Encode("Error unmarshalling request body")
 		return
 	}
-	if err := api.app.SaveClient(r.Context(), cl.ID, cl.IDType, cl.Name); err != nil {
+	if err := api.app.SaveClient(r.Context(), cl); err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode("Can't update the client")
