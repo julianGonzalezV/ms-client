@@ -89,7 +89,11 @@ func (r cRepository) Update(c *entity.Client) error {
 func (r cRepository) FetchByID(ID string) (entity.Client, error) {
 	collection := r.db.Database("test").Collection("clients")
 	resultStruct := entity.Client{}
-	filter := bson.M{"id": ID}
-	collection.FindOne(context.TODO(), filter).Decode(&resultStruct)
+	result := collection.FindOne(context.TODO(), bson.M{"idnumber": ID[1:len(ID)], "idtype": ID[0:1]})
+	if result.Err() != nil {
+		return resultStruct, result.Err()
+	}
+	result.Decode(&resultStruct)
 	return resultStruct, nil
+
 }
