@@ -17,7 +17,7 @@ import (
 	"github.com/apex/gateway"
 )
 
-// initializeRepo return a cliente repository based on database type name
+/// initializeRepo return a cliente repository based on database type name
 func initializeRepo(database *string) repository.ClientRepository {
 	switch *database {
 	case "mongo":
@@ -27,7 +27,7 @@ func initializeRepo(database *string) repository.ClientRepository {
 	}
 }
 
-// newClientMongoRepository returns the mongoDB implementation
+/// newClientMongoRepository returns the mongoDB implementation
 func newClientMongoRepository() repository.ClientRepository {
 	mongoAddr := os.Getenv("DATABASE_CONN")
 	client := repositoryimpl.Connect(mongoAddr)
