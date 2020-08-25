@@ -17,6 +17,7 @@ type ClientAppInterface interface {
 	SaveClient(ctx context.Context, requestData request.ClientRequest) error
 	GetClient(ctx context.Context, ID string) (*entity.Client, error)
 	GetAllClients(ctx context.Context) ([]*entity.Client, error)
+	ValidateClientByEmail(ctx context.Context, email string) (bool, error)
 }
 
 type clientApp struct {
@@ -50,6 +51,10 @@ func (app *clientApp) SaveClient(ctx context.Context, requestData request.Client
 // GetClient searches a client given its Id, It returns multiple results client and error
 func (app *clientApp) GetClient(ctx context.Context, ID string) (*entity.Client, error) {
 	return app.service.GetClient(ctx, ID)
+}
+
+func (app *clientApp)  ValidateClientByEmail(ctx context.Context, email string) (bool, error){
+	return app.service.ClientByEmail(ctx, email)
 }
 
 // GetAllClients searches all clients into the storage

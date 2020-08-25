@@ -13,6 +13,7 @@ type ClientRepository interface {
 	Fetch() ([]*entity.Client, error)
 	// FetchByID returns the client with given ID
 	FetchByID(ID string) (*entity.Client, error)
+	FetchByEmail(email string) (bool, error)
 	// Delete remove a client with given ID
 	Delete(ID string) error
 	// Update modify client with given ID and given new data

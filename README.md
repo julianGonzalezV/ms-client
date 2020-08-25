@@ -52,7 +52,7 @@ Process
 - Into your root project folder execute:
 1) 
 ```bash
-$ go get github.com/aws/aws-lambda-go/lambda   (if required)
+$ go get github.com/aws/aws-lambda-go/lambda   (onlu if you have not installed it)
 ```
 2) Next command create an executable file called main as the .go name file
 ```bash
@@ -66,8 +66,8 @@ $ zip ms-client.zip main
 4)Upload zip to S3 via aws cli or manually
 
 5) Update url lambda s3 into lamda module 
-- Nota: Para proyectos desde cero es mejor hacerlo con la lib de aws 
-pero en existentes se pueden usar wrappers como: (para este proyecto se usó apexGateway, ya que contabamos con una arquitectura ya hecha)
+- Nota: Para proyectos desde cero es mejor hacerlo con la lib de aws (https://docs.aws.amazon.com/lambda/latest/dg/golang-package.html)
+pero en existentes y si impacta el desarrollo se pueden usar wrappers como: (para este proyecto se usó apexGateway, ya que contabamos con un desarrollo ya hecho y una arquitectura definida)
 https://github.com/apex/gateway (https://www.ocelotconsulting.com/2019/02/25/the-right-abstraction-for-lambdas.html)
 
 ## AWS configuration:

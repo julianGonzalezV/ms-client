@@ -13,6 +13,8 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/apex/gateway"
 )
 
 /// initializeRepo return a cliente repository based on database type name
@@ -51,11 +53,11 @@ func ClientHandler() {
 	server := controller.New(applicationL)
 
 	// Next two linea are for AWS Conf
-	/*http.Handle("/", server.Router())
-	log.Fatal(gateway.ListenAndServe(httpAddr, nil))*/
+	http.Handle("/", server.Router())
+	log.Fatal(gateway.ListenAndServe(httpAddr, nil))
 
 	// Next line is for Local conf
-	log.Fatal(http.ListenAndServe(httpAddr, server.Router()))
+	//log.Fatal(http.ListenAndServe(httpAddr, server.Router()))
 	fmt.Println("The client server is running", httpAddr)
 
 }

@@ -20,6 +20,8 @@ type ClientServiceInterface interface {
 	SaveClient(ctx context.Context, c *entity.Client) error
 	// GetAllClients returns all existing clients into de storage
 	GetAllClients(ctx context.Context) ([]*entity.Client, error)
+	/// ClientByEmail retuns true if a client record existe related to input email
+	ClientByEmail(ctx context.Context, email string) (bool, error)
 }
 
 type clientService struct {
@@ -48,6 +50,10 @@ func (service *clientService) SaveClient(ctx context.Context, c *entity.Client) 
 // GetClient searches a client given its Id, It returns multiple results client and error
 func (service *clientService) GetClient(ctx context.Context, ID string) (*entity.Client, error) {
 	return service.repository.FetchByID(ID)
+}
+
+func (service *clientService) ClientByEmail(ctx context.Context, email string) (bool, error) {
+	return service.repository.FetchByEmail(email)
 }
 
 // GetAllClients searches all clients into the storage

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"ms-client/application"
 	"ms-client/domain/entity"
@@ -22,6 +23,7 @@ type Server interface {
 	Router() http.Handler
 	addClient(w http.ResponseWriter, r *http.Request)
 	searchClient(w http.ResponseWriter, r *http.Request)
+	searchClientByEmail(w http.ResponseWriter, r *http.Request)
 	updateClient(w http.ResponseWriter, r *http.Request)
 }
 
@@ -40,6 +42,7 @@ func router(a *api) {
 	r.HandleFunc("/clients", a.addClient).Methods(http.MethodPost)
 	r.HandleFunc("/clients/{ID:[a-zA-Z0-9_]+}", a.searchClient).Methods(http.MethodGet)
 	r.HandleFunc("/clients", a.updateClient).Methods(http.MethodPut)
+	r.HandleFunc("/clients/email/{email}", a.searchClientByEmail).Methods(http.MethodGet)
 	a.router = r
 }
 
@@ -82,6 +85,22 @@ func (api *api) searchClient(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		_ = json.NewEncoder(w).Encode(client)
+	}
+
+}
+
+// SearchClient by email
+func (api *api) searchClientByEmail(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Println(vars["email"])
+	if result, error := api.app.ValidateClientByEmail(r.Context(), vars["email"]); error != nil {
+		log.Println(error)
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode("Email not found")
+		return
+	} else {
+		_ = json.NewEncoder(w).Encode(result)
 	}
 
 }

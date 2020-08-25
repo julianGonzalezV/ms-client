@@ -92,10 +92,21 @@ func (r cRepository) FetchByID(ID string) (*entity.Client, error) {
 	resultStruct := &entity.Client{}
 	result := collection.FindOne(context.TODO(), bson.M{"idnumber": ID[1:len(ID)], "idtype": ID[0:1]})
 	if result.Err() == mongo.ErrNoDocuments {
-		fmt.Println("ErrNoDocuments")
 		return nil, customerror.ErrRecordNotFound
 	}
 	result.Decode(&resultStruct)
 	return resultStruct, nil
+
+}
+
+func (r cRepository) FetchByEmail(email string) (bool, error) {
+	collection := r.db.Database("test").Collection("clients")
+	resultStruct := &entity.Client{}
+	result := collection.FindOne(context.TODO(), bson.M{"contact.email": email})
+	if result.Err() == mongo.ErrNoDocuments {
+		return false, customerror.ErrRecordNotFound
+	}
+	result.Decode(&resultStruct)
+	return true, nil
 
 }
