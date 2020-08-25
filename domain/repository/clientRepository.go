@@ -12,7 +12,7 @@ type ClientRepository interface {
 	// Fetch return all clients saved in storage
 	Fetch() ([]*entity.Client, error)
 	// FetchByID returns the client with given ID
-	FetchByID(ID string) (entity.Client, error)
+	FetchByID(ID string) (*entity.Client, error)
 	// Delete remove a client with given ID
 	Delete(ID string) error
 	// Update modify client with given ID and given new data

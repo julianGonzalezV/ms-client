@@ -6,6 +6,7 @@ import (
 	"log"
 	"ms-client/domain/entity"
 	"ms-client/domain/repository"
+	"ms-client/infrastructure/shared/customerror"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -86,12 +87,13 @@ func (r cRepository) Update(c *entity.Client) error {
 }
 
 // FetchByID returns the client with given ID
-func (r cRepository) FetchByID(ID string) (entity.Client, error) {
+func (r cRepository) FetchByID(ID string) (*entity.Client, error) {
 	collection := r.db.Database("test").Collection("clients")
-	resultStruct := entity.Client{}
+	resultStruct := &entity.Client{}
 	result := collection.FindOne(context.TODO(), bson.M{"idnumber": ID[1:len(ID)], "idtype": ID[0:1]})
-	if result.Err() != nil {
-		return resultStruct, result.Err()
+	if result.Err() == mongo.ErrNoDocuments {
+		fmt.Println("ErrNoDocuments")
+		return nil, customerror.ErrRecordNotFound
 	}
 	result.Decode(&resultStruct)
 	return resultStruct, nil

@@ -15,7 +15,7 @@ import (
 type ClientAppInterface interface {
 	AddClient(ctx context.Context, requestData request.ClientRequest) error
 	SaveClient(ctx context.Context, requestData request.ClientRequest) error
-	GetClient(ctx context.Context, ID string) (entity.Client, error)
+	GetClient(ctx context.Context, ID string) (*entity.Client, error)
 	GetAllClients(ctx context.Context) ([]*entity.Client, error)
 }
 
@@ -48,7 +48,7 @@ func (app *clientApp) SaveClient(ctx context.Context, requestData request.Client
 }
 
 // GetClient searches a client given its Id, It returns multiple results client and error
-func (app *clientApp) GetClient(ctx context.Context, ID string) (entity.Client, error) {
+func (app *clientApp) GetClient(ctx context.Context, ID string) (*entity.Client, error) {
 	return app.service.GetClient(ctx, ID)
 }
 
