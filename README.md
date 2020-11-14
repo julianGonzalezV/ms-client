@@ -73,6 +73,21 @@ https://github.com/apex/gateway (https://www.ocelotconsulting.com/2019/02/25/the
 ## AWS configuration:
 - See "aws_conf_folder" where all process is documented via images
 
+
+
+## Docker conf
+# 1) Create docker file
+# 2) build for create the image go-ms-client:1.0
+sudo docker build --tag go-ms-client:1.0 .
+
+# 3) run the image created in previous step
+
+list stopped containers:
+docker ps -a
+
+copy the name or the container id of the container you want to attach to, and start the container with:
+docker start -i <name/id>
+
 ## Services Payloads:
 
 - Create - Post:
