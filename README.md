@@ -108,3 +108,53 @@ docker start -i <name/id>
 		"country":"Colombia"
 	}
 }
+
+
+con entrypoint 
+# official image 
+FROM golang:1.14.12-alpine3.11 AS build
+# Set working directory---donde se incluirá el código de la aplicacion
+WORKDIR /go/src/ms-client
+COPY go.mod .
+COPY go.sum .
+RUN go mod download 
+COPY . .
+# compilar el app(go build main.go) dejando el binario (-o de out) en el directorio bin del GOPATH (/go/bin)
+RUN go build -o /go/bin/ms-client main.go
+# crear una nueva imagen mínima (scratch) 
+FROM scratch
+# haciendo que el entry poin sea el binario generadi 
+COPY --from=build /go/bin/ms-client /go/bin/ms-client
+ENTRYPOINT ["./ms-client"]
+
+#CORRERLO 
+
+>Construir la imagen basado en  e docker file 
+sudo docker build -t ms-client-image .
+
+Crea un container 
+sudo docker run --name ms-client -p 8080:8000 ms-client-image
+Crear un contenedor y borrarlo cuando se haga stop de éste 
+sudo docker run --rm --name ms-client -p 8000:8080 ms-client-image  
+
+:::::::::::::::::::..con esta configuracion funciona peero queda la imagen pesando 1GB :O::::::::::::::::
+# official image 
+FROM golang:latest
+# Set working directory---donde se incluirá el código de la aplicacion
+WORKDIR /app
+COPY go.mod .
+COPY go.sum .
+RUN go mod download 
+#copiar todo al wordir
+COPY . .
+
+ENV DATABASE_DRIVER=mongo
+ENV DATABASE_CONN="mongodb+srv://xxx:xxxx@cluster-tulsoft.5r2lz.mongodb.net/test?retryWrites=true&w=majority"
+ENV CLIENTAPI_SERVER_HOST=0.0.0.0
+ENV CLIENTAPI_SERVER_PORT=8080
+# compilar el app(go build main.go) dejando el binario (-o de out) en el directorio bin del GOPATH (/go/bin)
+RUN go build
+# crear una nueva imagen mínima (scratch) 
+# haciendo que el entry poin sea el binario generadi 
+CMD ["./ms-client"]
+::::::::::::::::::::::::::::::::::::::::::::::::.

@@ -43,6 +43,7 @@ func router(a *api) {
 	r.HandleFunc("/clients/{ID:[a-zA-Z0-9_]+}", a.searchClient).Methods(http.MethodGet)
 	r.HandleFunc("/clients", a.updateClient).Methods(http.MethodPut)
 	r.HandleFunc("/clients/email/{email}", a.searchClientByEmail).Methods(http.MethodGet)
+	r.HandleFunc("/ms-client/health", healthCheck).Methods(http.MethodGet)
 	a.router = r
 }
 
@@ -52,6 +53,13 @@ func (a *api) Router() http.Handler {
 
 //Clients ...
 type Clients []entity.Client
+
+func healthCheck(w http.ResponseWriter, r *http.Request) {
+	var outp struct{ Result string }
+	outp.Result = "Ok"
+	json.NewEncoder(w).Encode(outp)
+
+}
 
 // AddClient function saves a new client
 func (api *api) addClient(w http.ResponseWriter, r *http.Request) {

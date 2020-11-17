@@ -28,6 +28,7 @@ func initializeRepo(database *string) repository.ClientRepository {
 /// newClientMongoRepository returns the mongoDB implementation
 func newClientMongoRepository() repository.ClientRepository {
 	mongoAddr := os.Getenv("DATABASE_CONN")
+	fmt.Println("mongoAddr => ", mongoAddr)
 	client := repositoryimpl.Connect(mongoAddr)
 	return repositoryimpl.NewRepository(client)
 }
@@ -41,7 +42,9 @@ func ClientHandler() {
 	host := flag.String("host", defaultHost, "define host of the server")
 	port := flag.Int("port", defaultPort, "define port of the server")
 	database := flag.String("database", dbDriver, "initialize the api using the given db engine")
-
+	fmt.Println(defaultHost)
+	fmt.Println(defaultPort)
+	fmt.Println(dbDriver)
 	// Injecting service and repo to Application Layer
 	applicationL := application.NewClientApp(service.NewClientService(initializeRepo(database)))
 
