@@ -16,7 +16,9 @@ xxworkspace
 >Then, create the GOPATH environment variable, point to xxworkspace folder--ok
 
 >Additionally, you  have to create  GOPATH/bin into your PATH env variable (This is a pending step, please read https://golang.org/doc/gopath_code.html before )
-    
+    eg
+	GOPATH="/home/jag/Documents/study/goWorkspace"
+	GOROOT="/usr/local/go"
 
 # Herramientas 
 Golang Context:
@@ -33,6 +35,12 @@ $ go get -u github.com/gorilla/mux
 # Install the MongoDB Go Driver
 https://blog.friendsofgo.tech/posts/driver-oficial-mongodb-golang/
 go get -u go.mongodb.org/mongo-driver
+
+
+## Upgrade Golang version:
+- If you have a previous version of Go installed, be sure to remove it before installing another.
+
+
 
 ## Linux
 ```bash
@@ -134,12 +142,12 @@ sudo docker build -t ms-client-image .
 
 Crea un container 
 sudo docker run --name ms-client -p 8080:8000 ms-client-image
-Crear un contenedor y borrarlo cuando se haga stop de éste 
+Crear un contenedor y que se borre automáticamente cuando se haga stop de éste 
 sudo docker run --rm --name ms-client -p 8000:8080 ms-client-image  
 
-:::::::::::::::::::..con esta configuracion funciona peero queda la imagen pesando 1GB :O::::::::::::::::
+::::::::..con esta configuracion funciona, pero queda la imagen pesando 705mb:: :
 # official image 
-FROM golang:latest
+FROM golang:1.15.5-alpine3.12
 # Set working directory---donde se incluirá el código de la aplicacion
 WORKDIR /app
 COPY go.mod .
@@ -147,14 +155,60 @@ COPY go.sum .
 RUN go mod download 
 #copiar todo al wordir
 COPY . .
-
-ENV DATABASE_DRIVER=mongo
-ENV DATABASE_CONN="mongodb+srv://xxx:xxxx@cluster-tulsoft.5r2lz.mongodb.net/test?retryWrites=true&w=majority"
-ENV CLIENTAPI_SERVER_HOST=0.0.0.0
-ENV CLIENTAPI_SERVER_PORT=8080
 # compilar el app(go build main.go) dejando el binario (-o de out) en el directorio bin del GOPATH (/go/bin)
 RUN go build
+
+RUN ls
 # crear una nueva imagen mínima (scratch) 
 # haciendo que el entry poin sea el binario generadi 
 CMD ["./ms-client"]
 ::::::::::::::::::::::::::::::::::::::::::::::::.
+
+
+::::..Con esta CONF arranca el server pero no reconoce el string de conexión mongo::::::.
+# official image 
+FROM golang:1.15.5-alpine3.12 AS build
+# Set working directory---donde se incluirá el código de la aplicacion
+WORKDIR /go/src/ms-client
+COPY go.mod .
+COPY go.sum .
+RUN go mod download 
+#copiar todo al workdir
+COPY . .
+# compilar el app actual(go build main.go) dejando el binario (-o de out) en el directorio bin del GOPATH (/go/bin)
+# bRUN go build -o /go/bin/msclient 
+RUN  CGO_ENABLED=0  go build -o /go/bin/ms-client 
+
+# crear una nueva imagen mínima (scratch) 
+FROM scratch
+# copiando el build que quedó en /go/bin/msclient a go/src/msclient
+COPY --from=build /go/bin/ms-client /go/bin/ms-client
+
+# haciendo que el entry point sea el binario generado al ejecutar rgo build
+# este es el comando que se ejecutará al incial el contenedory
+ENTRYPOINT ["/go/bin/ms-client"]
+::::::::::::::::::::::::::::::::::::::::::::::::.
+
+:::::::::::::finalmente la que funciona es (ejemplo ):::::::::::::...
+author https://github.com/jeremyhuiskamp/golang-docker-scratch (mejorando el ejemplo en mi repo a solo tener lo que se requiere)
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+FROM golang:1.15.5-alpine3.12 as build
+WORKDIR /go/src/ms-client
+COPY . .
+# Static build required so that we can safely copy the binary over.
+# CGO_ENABLED permite la interoperatividad de Go programs con C
+RUN CGO_ENABLED=0 go build -o /go/bin/msclient 
+
+FROM golang:1.15.5-alpine3.12 as alpine
+# --no-cache permitr no cachear el index localmente(docker container), 
+# ayudando a que el contenedor sea lo más pequeño posible 
+# Es igual que colocar  apk update AL INICIO y  rm -rf /var/cache/apk/* AL FINAL
+RUN apk --no-cache add ca-certificates
+
+#Creando imagen desde cero para que no pese ese voleo de MB o GB
+FROM scratch
+# copiando el build generado 
+COPY --from=build /go/bin/msclient /go/bin/msclient
+# agregadndo los Certificados  tls para conexión al exterior(eg https)
+COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+ENTRYPOINT ["/go/bin/msclient"]

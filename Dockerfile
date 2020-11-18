@@ -1,22 +1,20 @@
-
-# official image 
-FROM golang:1.14.12-alpine3.11 AS build
-# Set working directory---donde se incluirá el código de la aplicacion
+FROM golang:1.15.5-alpine3.12 as build
 WORKDIR /go/src/ms-client
-COPY go.mod .
-COPY go.sum .
-RUN go mod download 
-#copiar todo al workdir
 COPY . .
-# compilar el app actual(go build main.go) dejando el binario (-o de out) en el directorio bin del GOPATH (/go/bin)
-# bRUN go build -o /go/bin/msclient 
-RUN  CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /go/bin/ms-client 
+# Static build required so that we can safely copy the binary over.
+# CGO_ENABLED permite la interoperatividad de Go programs con C
+RUN CGO_ENABLED=0 go build -o /go/bin/msclient 
 
-# crear una nueva imagen mínima (scratch) 
+FROM golang:1.15.5-alpine3.12 as alpine
+# --no-cache permitr no cachear el index localmente(docker container), 
+# ayudando a que el contenedor sea lo más pequeño posible 
+# Es igual que colocar  apk update AL INICIO y  rm -rf /var/cache/apk/* AL FINAL
+RUN apk --no-cache add ca-certificates
+
+#Creando imagen desde cero para que no pese ese voleo de MB o GB
 FROM scratch
-# copiando el build que quedó en /go/bin/msclient a go/src/msclient
-COPY --from=build /go/bin/ms-client /go/bin/ms-client
-
-# haciendo que el entry poin sea el binario generado al ejecutar rgo build
-# este es el comando que se ejecutará al incial el contenedory
-CMD ["./go/bin/ms-client"]
+# copiando el build generado 
+COPY --from=build /go/bin/msclient /go/bin/msclient
+# agregadndo los Certificados  tls para conexión al exterior(eg https)
+COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+ENTRYPOINT ["/go/bin/msclient"]
